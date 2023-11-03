@@ -27,12 +27,20 @@ Material:
         m_Texture: {fileID: 2800000, guid: 3f428a01fcba4814c8ffa77c7d0c4903, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _GroundTex:
+        m_Texture: {fileID: 2800000, guid: d40869b24e3ed17409408c197f583fea, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SnowTex:
+        m_Texture: {fileID: 2800000, guid: 0208630b05af2924c927786c935257de, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
@@ -43,5 +51,7 @@ Material:
     - _Tess: 32
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _GroundColor: {r: 1, g: 1, b: 1, a: 0}
+    - _SnowColor: {r: 1, g: 1, b: 1, a: 0}
     - _SpecColor: {r: 0.5, g: 0.5, b: 0.5, a: 0.5}
   m_BuildTextureStacks: []

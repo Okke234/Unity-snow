@@ -3,12 +3,12 @@ Shader "Tessellation Sample"
     Properties
     {
         _Tess ("Tessellation", Range(1,32)) = 4
-        _MainTex ("Base (RGB)", 2D) = "white" {}
-        _DispTex ("Disp Texture", 2D) = "gray" {}
-        _NormalMap ("Normalmap", 2D) = "bump" {}
+        _SnowColor ("Snow Color", color) = (1,1,1,0)
+        _SnowTex ("Snow", 2D) = "white" {}
+        _GroundColor ("Ground Color", color) = (1,1,1,0)
+        _GroundTex ("Ground", 2D) = "white" {}
+        _DispTex ("Disp Texture", 2D) = "black" {}
         _Displacement ("Displacement", Range(0, 1.0)) = 0.3
-        _Color ("Color", color) = (1,1,1,0)
-        _SpecColor ("Spec color", color) = (0.5,0.5,0.5,0.5)
     }
     SubShader
     {
@@ -19,7 +19,7 @@ Shader "Tessellation Sample"
         LOD 300
 
         CGPROGRAM
-        #pragma surface surf BlinnPhong addshadow fullforwardshadows vertex:disp tessellate:tessDistance nolightmap
+        #pragma surface surf Standard fullforwardshadows vertex:disp tessellate:tessDistance
         #pragma target 4.6
         #include "Tessellation.cginc"
 
@@ -46,25 +46,43 @@ Shader "Tessellation Sample"
         void disp(inout appdata v)
         {
             float d = tex2Dlod(_DispTex, float4(v.texcoord.xy, 0, 0)).r * _Displacement;
-            v.vertex.xyz += v.normal * d;
+            v.vertex.xyz -= v.normal * d;
+            v.vertex.xyz += v.normal * _Displacement;
         }
+
+        sampler2D _SnowTex;
+        fixed4 _SnowColor;
+        sampler2D _GroundTex;
+        fixed4 _GroundColor;
 
         struct Input
         {
-            float2 uv_MainTex;
+            float2 uv_SnowTex;
+            float2 uv_GroundTex;
+            float2 uv_DispTex;
         };
 
-        sampler2D _MainTex;
-        sampler2D _NormalMap;
-        fixed4 _Color;
+        half _Glossiness;
+        half _Metallic;
 
-        void surf(Input IN, inout SurfaceOutput o)
+        // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
+        // See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
+        // #pragma instancing_options assumeuniformscaling
+        UNITY_INSTANCING_BUFFER_START(Props)
+            // put more per-instance properties here
+        UNITY_INSTANCING_BUFFER_END(Props)
+
+        void surf (Input IN, inout SurfaceOutputStandard o)
         {
-            half4 c = tex2D(_MainTex, IN.uv_MainTex) * _Color;
+            // Albedo comes from a texture tinted by color
+            half amount = tex2Dlod(_DispTex, float4(IN.uv_DispTex, 0, 0)).r;
+            fixed4 c = lerp(tex2D (_SnowTex, IN.uv_SnowTex) * _SnowColor, tex2D (_GroundTex, IN.uv_GroundTex) * _GroundColor, amount);
+            
             o.Albedo = c.rgb;
-            o.Specular = 0.2;
-            o.Gloss = 1.0;
-            o.Normal = UnpackNormal(tex2D(_NormalMap, IN.uv_MainTex));
+            // Metallic and smoothness come from slider variables
+            o.Metallic = _Metallic;
+            o.Smoothness = _Glossiness;
+            o.Alpha = c.a;
         }
         ENDCG
     }
