@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: a9173129c5bffa84faeb9c367133024f
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - drawShader: {fileID: 4800000, guid: 7df689a3cb6dc7b4b8a908f296e8337b, type: 3}
+  - terrain: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
