@@ -1,4 +1,4 @@
-Shader "Tessellation Sample"
+Shader "SnowShader"
 {
     Properties
     {
@@ -45,7 +45,7 @@ Shader "Tessellation Sample"
 
         void disp(inout appdata v)
         {
-            float d = tex2Dlod(_DispTex, float4(v.texcoord.xy, 0, 0)).r * _Displacement;
+            float d = tex2Dlod(_DispTex, float4(v.texcoord.xy, 0, 0)) * _Displacement;
             v.vertex.xyz -= v.normal * d;
             v.vertex.xyz += v.normal * _Displacement;
         }
@@ -75,7 +75,7 @@ Shader "Tessellation Sample"
         void surf (Input IN, inout SurfaceOutputStandard o)
         {
             // Albedo comes from a texture tinted by color
-            half amount = tex2Dlod(_DispTex, float4(IN.uv_DispTex, 0, 0)).r;
+            half amount = tex2Dlod(_DispTex, float4(IN.uv_DispTex, 0, 0));
             fixed4 c = lerp(tex2D (_SnowTex, IN.uv_SnowTex) * _SnowColor, tex2D (_GroundTex, IN.uv_GroundTex) * _GroundColor, amount);
             
             o.Albedo = c.rgb;
